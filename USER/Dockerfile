@@ -1,4 +1,4 @@
 FROM alpine
-RUN useradd nginx
+RUN adduser nginx
 USER nginx
 RUN touch /tmp/hello.txt
