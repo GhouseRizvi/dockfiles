@@ -6,4 +6,5 @@ FROM almalinux:${Version:-8}
 
 ARG Greeting="Hello Good Morning"
 RUN echo "$Greeting"
+ENV Greet=${Greeting}
 RUN echo "$Version"
