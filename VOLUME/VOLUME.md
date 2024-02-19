@@ -42,3 +42,32 @@ mkdir webdata
 docker run -d -v /root/webdata/:/usr/share/nginx/html -p 2003:80 nginx
 these volumes are anonymoud to data, these volumes cannot be managed by docker.
 
+Inside host volume directory is created, and this directory can be mounted to any path of the container.
+
+Data inside the volume can also be seen under the container path.
+
+### Example
+[root@localhost ~]# docker volume create mysql-data
+[root@localhost ~]# docker run -d -v mysql-data:/var/lib/mysql mysql
+[root@localhost ~]# docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS                      PORTS     NAMES
+de791458c718   mysql     "docker-entrypoint.s…"   14 seconds ago   Exited (1) 11 seconds ago 
+
+[root@localhost ~]# docker logs de791458c718
+2024-02-14 18:21:58+00:00 [ERROR] [Entrypoint]: Database is uninitialized and password option is not specified
+    You need to specify one of the following as an environment variable:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_ALLOW_EMPTY_PASSWORD
+    - MYSQL_RANDOM_ROOT_PASSWORD
+
+to vercome the above error we need to provide the password as below
+[root@localhost ~]# docker run -d -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root123 mysql
+
+[root@localhost ~]# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                 NAMES
+251d06ea445d   mysql     "docker-entrypoint.s…"   5 seconds ago   Up 4 seconds   3306/tcp
+
+[root@localhost ~]# docker exec -it 251d06ea445d bash
+bash-4.4# mysql -u root -proot123
+
+
